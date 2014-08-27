@@ -100,7 +100,7 @@ Execute.schedule_exec_file(script="script.sh",
                            log_file=logger)
 
 Execute.schedule_remote_exec_file(script="script.sh",
-                                  host="192.168.219.215",
+                                  host="host ip",
                                   port=22,
                                   user="username",
                                   password="password",
@@ -112,7 +112,7 @@ Execute.schedule_remote_exec_file(script="script.sh",
 
 
 Execute.schedule_remote_exec_key(key="py_search",
-                                 host="192.168.219.215",
+                                 host="host ip",
                                  port=22,
                                  user="username",
                                  password="password",
