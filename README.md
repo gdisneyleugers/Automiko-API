@@ -5,8 +5,11 @@ Automation Engine written in python with remote execution and redis backend
 
 setup
 ========
-pip install redis paramiko scp
+pip install redis paramiko scp Automiko
 
+or 
+
+pip install redis paramiko scp
 
 cd automiko 
 
