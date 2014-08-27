@@ -52,6 +52,7 @@ Execute.exec_key(key="py_search",
                  host=db_host,
                  port=db_port,
                  db=db)
+Execute.tally_counter(logfile=logger, resultfile=results, test_pass=True, test_fail=True)
 Executing a file
 ========
 Execute.exec_file(script="script.sh",
