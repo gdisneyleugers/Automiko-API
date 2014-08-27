@@ -41,8 +41,6 @@ Execute.key_cmd(key="py_search",
                 port=db_port,
                 db=db)
 
-#Execute Test Key
-
 Execute.exec_key(key="py_search",
                  test_name="Test Key Exec",
                  result_query=".py",
