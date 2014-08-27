@@ -68,8 +68,6 @@ Execute.remote_exec_file(script="script.sh",
                          test_detail="Remote execute script and verify port 22 is open",
                          log_file=logger)
 
-#Remote Test Key Execution
-
 Execute.remote_exec_key(key="py_search",
                         host="host ip",
                         port=22,
@@ -94,16 +92,12 @@ Execute.schedule_exec_key(key="py_search",
                         port=db_port,
                         db=db)
 
-#Execute Test Script only on Tuesday
-
 Execute.schedule_exec_file(script="script.sh",
                            test_name="Port verification via nmap",
                            result_query="open port 8099",
                            test_detail="Verify port 8099 is open",
                            exec_time="Tue",
                            log_file=logger)
-
-#Remote Execute Test Script only on Tuesday
 
 Execute.schedule_remote_exec_file(script="script.sh",
                                   host="192.168.219.215",
@@ -116,7 +110,6 @@ Execute.schedule_remote_exec_file(script="script.sh",
                                   exec_time="Tue",
                                   log_file=logger)
 
-#Remote Execute key only at 1900
 
 Execute.schedule_remote_exec_key(key="py_search",
                                  host="192.168.219.215",
