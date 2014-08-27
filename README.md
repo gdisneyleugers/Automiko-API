@@ -6,8 +6,14 @@ Automation Engine written in python with remote execution and redis backend
 setup
 ========
 pip install redis paramiko scp
+
+
 cd automiko 
+
+
 python setup.py build
+
+
 python setup.py install
 
 Running
