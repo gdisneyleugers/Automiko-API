@@ -3,15 +3,18 @@ automiko
 
 Automation Engine written in python with remote execution and redis backend
 
-== setup ==
+setup
+========
 pip install redis paramiko scp
 cd automiko 
 python setup.py build
 python setup.py install
 
-== Running ==
+Running
+========
 
-=== Sample Key Execution ===
+Sample Key Execution
+========
 import Automiko.Execute as Execute
 db_host = "localhost"
 db_port = 6379
@@ -34,13 +37,15 @@ Execute.exec_key(key="py_search",
                  host=db_host,
                  port=db_port,
                  db=db)
-== Executing a file ==
+Executing a file
+========
 Execute.exec_file(script="script.sh",
                   test_name="Test File Exec",
                   result_query="open port 8099",
                   test_detail="verify port 8099 is open",
                   log_file=logger)
-== Executing a script or key remotely ==
+Executing a script or key remotely
+========
 Execute.remote_exec_file(script="script.sh",
                          host="host ip",
                          port=22,
@@ -65,7 +70,8 @@ Execute.remote_exec_key(key="py_search",
                         db_host=db_host,
                         db_port=db_port,
                         db=db)
-== Scheduling Functions ==
+Scheduling Functions
+========
 Execute.schedule_exec_key(key="py_search",
                         test_name="Remote key execution verifying python script exist",
                         result_query=".py",
@@ -114,8 +120,8 @@ Execute.schedule_remote_exec_key(key="py_search",
                                  db=db,
                                  log_file=logger)
 
-== Caculate Results ==
-
+Caculate Results 
+========
 Execute.tally_counter(logfile=logger,
                       resultfile=results,
                       test_pass=True,
