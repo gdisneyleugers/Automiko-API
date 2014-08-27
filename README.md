@@ -21,12 +21,20 @@ Running
 
 Sample Key Execution
 ========
+
 import Automiko.Execute as Execute
+
 db_host = "localhost"
+
 db_port = 6379
+
 db = 0
+
 logger = "logger.log"
+
 results = "results.log"
+
+
 Execute.key_cmd(key="py_search",
                 cmd="ls",
                 host=db_host,
