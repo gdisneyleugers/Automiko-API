@@ -318,5 +318,5 @@ def store_tally(resultfile, host, port, db):
     r = db_connect(host=host, port=port, db=db)
     with open(resultfile, "r") as log:
         for i, line in enumerate(log):
-            test = str(i) + "-test-{0}".format(time.time())
+            test = str(i) + "-result-{0}".format(time.time())
             r.set(test, line)
