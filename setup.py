@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Automiko',
-    version='1.0.1',
+    version='1.0.2',
     url='',
     packages=['Automiko'],
     license='gpl',

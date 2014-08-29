@@ -6,6 +6,7 @@ import paramiko
 from scp import SCPClient
 import socket
 
+
 class Backend:
     def __init__(self):
         pass
@@ -47,6 +48,7 @@ def exec_key(key, test_name, result_query, test_detail, log_file, host, port, db
             stop = time.asctime()
             test_result = "Fail"
             test_logger(log_file, test_name, start, stop, test_result)
+            store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
         if result_query in r:
             print "Pass {0}\n".format(test_name)
             print "Test detail: \n" + test_detail + "\n"
@@ -54,6 +56,7 @@ def exec_key(key, test_name, result_query, test_detail, log_file, host, port, db
             stop = time.asctime()
             test_result = "Pass"
             test_logger(log_file, test_name, start, stop, test_result)
+            store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
     except TypeError:
         print "Key doesn't exist in DB"
 
@@ -97,13 +100,15 @@ def schedule_exec_key(key, test_name, result_query, test_detail, exec_time, log_
                 print "Test detail: \n" + test_detail + "\n"
                 print "Result: " + r + "\n"
                 stop = time.asctime()
-                test_logger(log_file, test_name, start, stop, "Pass")
+                test_logger(log_file, test_name, start, stop, "Fail")
+                store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
             if result_query in r:
                 print "Pass {0}\n".format(test_name)
                 print "Test detail: \n" + test_detail + "\n"
                 print "Result: " + r + "\n"
                 stop = time.asctime()
                 test_logger(log_file, test_name, start, stop, "Pass")
+                store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
         except TypeError:
             print "Key doesn't exist in DB"
     else:
@@ -199,12 +204,14 @@ def remote_exec_key(key, host, port, user, password, test_name, result_query, te
         print "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Fail")
+        store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
     if result_query in cmd:
         print "Pass {0}".format(test_name)
         print "Test detail: \n" + test_detail + "\n"
         print "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Pass")
+        store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
 
 
 def schedule_remote_exec_file(script, host, port, user, password, test_name, result_query, test_detail, exec_time, log_file):
@@ -246,6 +253,7 @@ def schedule_remote_exec_file(script, host, port, user, password, test_name, res
         test_logger(log_file, test_name, start, stop, "Command Deferred")
 
 
+
 def schedule_remote_exec_key(key, host, port, user, password, test_name, result_query, test_detail, exec_time, log_file, db_host, db_port, db):
     start = time.asctime()
     if exec_time in time.asctime():
@@ -271,16 +279,19 @@ def schedule_remote_exec_key(key, host, port, user, password, test_name, result_
             print "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Fail")
+            store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
         if result_query in cmd:
             print "Pass {0}".format(test_name)
             print "Test detail: \n" + test_detail + "\n"
             print "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Pass")
+            store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
     else:
         print "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Command Deferred")
+        store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
 
 def store_results(logfile, host, port, db):
     r = db_connect(host=host, port=port, db=db)
@@ -320,3 +331,9 @@ def store_tally(resultfile, host, port, db):
         for i, line in enumerate(log):
             test = str(i) + "-result-{0}".format(time.time())
             r.set(test, line)
+
+
+def store_detail(test_detail, test_name, host, port, db):
+    r = db_connect(host=host, port=port, db=db)
+    test = test_name + "-" + str(time.asctime())
+    r.set(test, test_detail)
