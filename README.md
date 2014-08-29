@@ -137,3 +137,10 @@ Execute.tally_counter(logfile=logger,
                       resultfile=results,
                       test_pass=True,
                       test_fail=True)
+                      
+Store Results in DB
+========
+
+Execute.store_results(logfile=logger, host=db_host, port=db_port, db=db)
+
+Execute.store_tally(resultfile=results, host=db_host, port=db_port, db=db)
