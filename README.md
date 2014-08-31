@@ -5,11 +5,11 @@ Automation Engine API written in python
 
 setup
 ========
-pip install redis paramiko scp Automiko zeromq flask
+pip install redis paramiko scp Automiko zerorpc flask
 
 or 
 
-pip install redis paramiko scp zeromq flask
+pip install redis paramiko scp zerorpc flask
 
 cd automiko 
 
