@@ -27,7 +27,7 @@ def db_connect(host, port, db):
 def key_cmd(key, cmd, host, port, db):
     r = db_connect(host, port, db)
     r.set(key, cmd)
-    print "saved " + key + " @ " + cmd
+    return "saved " + key + " @ " + cmd
 
 
 def db_get(key, host, port, db):
@@ -42,21 +42,23 @@ def exec_key(key, test_name, result_query, test_detail, log_file, host, port, db
         cmd = db_get(key, host, port, db)
         r = os.popen(cmd).read()
         if result_query not in r:
-            print "Failed {0}\n".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: " + r + "\n"
+            a = "Failed: {0}\n".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: " + r + "\n"
             stop = time.asctime()
             test_result = "Fail"
             test_logger(log_file, test_name, start, stop, test_result)
             store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+            return a, b, c
         if result_query in r:
-            print "Pass {0}\n".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + r + "\n"
+            a = "Pass: {0}\n".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + r + "\n"
             stop = time.asctime()
             test_result = "Pass"
             test_logger(log_file, test_name, start, stop, test_result)
             store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+            return a, b, c
     except TypeError:
         print "Key doesn't exist in DB"
 
@@ -76,17 +78,19 @@ def exec_file(script, test_name, result_query, test_detail, log_file):
         test_logger(log_file, "Chmod", start, stop, test_result)
     cmd = os.popen("./{0}".format(script)).read()
     if result_query not in cmd:
-        print "Failed {0}\n".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a = "Failed: {0}\n".format(test_name)
+        b = "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Fail")
+        return  a, b, c
     if result_query in cmd:
-        print "Pass {0}".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a = "Pass: {0}".format(test_name)
+        b =  "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Pass")
+        return  a, b, c
 
 
 def schedule_exec_key(key, test_name, result_query, test_detail, exec_time, log_file, host, port, db):
@@ -96,21 +100,23 @@ def schedule_exec_key(key, test_name, result_query, test_detail, exec_time, log_
             cmd = cmd = db_get(key, host, port, db)
             r = os.popen(cmd).read()
             if result_query not in r:
-                print "Failed {0}\n".format(test_name)
-                print "Test detail: \n" + test_detail + "\n"
-                print "Result: " + r + "\n"
+                a =  "Failed: {0}\n".format(test_name)
+                b =  "Test detail: \n" + test_detail + "\n"
+                c = "Result: " + r + "\n"
                 stop = time.asctime()
                 test_logger(log_file, test_name, start, stop, "Fail")
                 store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+                return a, b, c
             if result_query in r:
-                print "Pass {0}\n".format(test_name)
-                print "Test detail: \n" + test_detail + "\n"
-                print "Result: " + r + "\n"
+                a =  "Pass {0}\n".format(test_name)
+                b = "Test detail: \n" + test_detail + "\n"
+                c =  "Result: " + r + "\n"
                 stop = time.asctime()
                 test_logger(log_file, test_name, start, stop, "Pass")
                 store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+                return a, b, c
         except TypeError:
-            print "Key doesn't exist in DB"
+            return "Key doesn't exist in DB"
     else:
           print "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
           stop = time.asctime()
@@ -131,19 +137,23 @@ def schedule_exec_file(script, test_name, result_query, test_detail, exec_time, 
             test_logger(log_file, test_name, start, stop, "Pass")
         cmd = os.popen("./{0}".format(script)).read()
         if result_query not in cmd:
-            print "Failed {0}\n".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a = "Failed: {0}\n".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "fail")
+            return a, b, c
         if result_query in cmd:
-            print "Pass {0}".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a =  "Pass: {0}".format(test_name)
+            b =  "Test detail: \n" + test_detail + "\n"
+            c =  "Result: \n" + cmd + "\n"
+            return a, b, c
+
     else:
-        print "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
+        a =  "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Command Deferred")
+        return a
 
 
 def remote_exec_file(script, host, port, user, password, test_name, result_query, test_detail, log_file):
@@ -167,18 +177,19 @@ def remote_exec_file(script, host, port, user, password, test_name, result_query
     a = stdout.readlines()
     cmd = str(a)
     if result_query not in cmd:
-        print "Failed {0}\n".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a = "Failed: {0}\n".format(test_name)
+        b = "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Fail")
+        return a, b, c
     if result_query in cmd:
-        print "Pass {0}".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a =  "Pass {0}".format(test_name)
+        b =  "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Pass")
-
+        return a, b, c
 
 def remote_exec_key(key, host, port, user, password, test_name, result_query, test_detail, log_file, db_host, db_port, db):
     start = time.asctime()
@@ -186,12 +197,6 @@ def remote_exec_key(key, host, port, user, password, test_name, result_query, te
     cl.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         cc = cl.connect(host, port=port, username=user, password=password)
-    except paramiko.ssh_exception.AuthenticationException:
-            print "Auth Error"
-    except paramiko.ssh_exception.SSHException:
-            print "Protocol Error"
-    except paramiko.transport:
-            print "General Error"
     except socket.error:
             print "Socket Error"
     func = db_get(key, db_host, db_port, db)
@@ -199,20 +204,21 @@ def remote_exec_key(key, host, port, user, password, test_name, result_query, te
     a = stdout.readlines()
     cmd = str(a)
     if result_query not in cmd:
-        print "Failed {0}\n".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a = "Failed: {0}\n".format(test_name)
+        b = "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Fail")
-        store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+        store_detail(test_detail=test_detail, test_name=test_name, host=db_host, port=db_port, db=db)
+        return a, b, c
     if result_query in cmd:
-        print "Pass {0}".format(test_name)
-        print "Test detail: \n" + test_detail + "\n"
-        print "Result: \n" + cmd + "\n"
+        a = "Pass: {0}".format(test_name)
+        b = "Test detail: \n" + test_detail + "\n"
+        c = "Result: \n" + cmd + "\n"
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Pass")
-        store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
-
+        store_detail(test_detail=test_detail, test_name=test_name, host=db_host, port=db_port, db=db)
+        return a, b, c
 
 def schedule_remote_exec_file(script, host, port, user, password, test_name, result_query, test_detail, exec_time, log_file):
     start = time.asctime()
@@ -236,22 +242,23 @@ def schedule_remote_exec_file(script, host, port, user, password, test_name, res
         a = stdout.readlines()
         cmd = str(a)
         if result_query not in cmd:
-            print "Failed {0}\n".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a = "Failed: {0}\n".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Fail")
+            return a, b, c
         if result_query in cmd:
-            print "Pass {0}".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a = "Pass: {0}".format(test_name)
+            b =  "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Pass")
     else:
-        print "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
+        a = "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
         stop = time.asctime()
         test_logger(log_file, test_name, start, stop, "Command Deferred")
-
+        return a
 
 
 def schedule_remote_exec_key(key, host, port, user, password, test_name, result_query, test_detail, exec_time, log_file, db_host, db_port, db):
@@ -274,19 +281,21 @@ def schedule_remote_exec_key(key, host, port, user, password, test_name, result_
         a = stdout.readlines()
         cmd = str(a)
         if result_query not in cmd:
-            print "Failed {0}\n".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a = "Failed: {0}\n".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Fail")
             store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+            return a, b, c
         if result_query in cmd:
-            print "Pass {0}".format(test_name)
-            print "Test detail: \n" + test_detail + "\n"
-            print "Result: \n" + cmd + "\n"
+            a = "Pass: {0}".format(test_name)
+            b = "Test detail: \n" + test_detail + "\n"
+            c = "Result: \n" + cmd + "\n"
             stop = time.asctime()
             test_logger(log_file, test_name, start, stop, "Pass")
             store_detail(test_detail=test_detail, test_name=test_name, host=host, port=port, db=db)
+            return a, b, c
     else:
         print "{0} ".format(test_name) + "Will run next @ {0}".format(exec_time)
         stop = time.asctime()
@@ -312,7 +321,7 @@ def tally_counter(logfile, resultfile, test_pass=True, test_fail=True):
                     f = open(resultfile, "a")
                     f.write(r)
                     f.close()
-                    print r
+                    return r
                 if test_fail is True:
                     fail_str = "Fail"
                     if fail_str in line:
@@ -322,7 +331,7 @@ def tally_counter(logfile, resultfile, test_pass=True, test_fail=True):
                         f = open(resultfile, "a")
                         f.write(r)
                         f.close()
-                        print r
+                        return r
 
 
 def store_tally(resultfile, host, port, db):
@@ -337,3 +346,23 @@ def store_detail(test_detail, test_name, host, port, db):
     r = db_connect(host=host, port=port, db=db)
     test = test_name + "-" + str(time.asctime())
     r.set(test, test_detail)
+
+def set_user(user, db_host, port, db):
+    key_cmd("user", user, db_host, port, db)
+    a = "User saved"
+    return a
+
+def set_user_pass(password, db_host, port, db):
+    key_cmd("password", password, db_host, port, db)
+    a = "Password saved"
+    return a
+
+def set_remote_host(host, db_host, db_port, db):
+    key_cmd("host", host, db_host, db_port, db)
+    a = "Host Set"
+    return a
+
+def set_remote_port(db_host, db_port, db):
+    key_cmd("port", 22, db_host, db_port, db)
+    a = "Port Set"
+    return a
